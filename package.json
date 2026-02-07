@@ -1,0 +1,20 @@
+{
+  "name": "devtinder_backend",
+  "version": "1.0.0",
+  "description": "This is the backend of devtinder",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "This",
+    "is",
+    "backend"
+  ],
+  "author": "Shreya Singh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
