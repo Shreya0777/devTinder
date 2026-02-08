@@ -8,14 +8,26 @@ app.use("/test", (req,res)=>{
     res.send("This is test route");
 });
 
-app.use("/hello",(req,res)=>{
-    res.send("Hello world");
-});
+app.get('/user',(req,res) =>{
+    res.send({firstname: "Shreya", Lastname: "Singh"});
+})
+
+app.post('/user',(req,res)=>{
+    res.send('user created successfully');
+})
+
+app.delete('/user' , (req,res) =>{
+    res.send('user deleted successfully')
+})
+
+// app.use("/hello",(req,res)=>{
+//     res.send("Hello world");
+// });
 
 
-app.use("/",(req,res)=>{
-    res.send("Hello from server");
-});
+// app.use("/",(req,res)=>{
+//     res.send("Hello from server");
+// });
 
 
 
