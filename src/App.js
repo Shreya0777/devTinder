@@ -2,19 +2,25 @@ const express = require('express');
 
 const app=express();
 
+const {adminAuth,userAuth} = require('./middleware/Auth');
 
-app.get("/user",(req,res,next)=>{
-    console.log("1st route");
-    next();
-},
-(req,res,next)=>{
-    console.log("2nd rout");
-    next();
-},(req,res,next)=>{
-    console.log("3rd route");
-    res.send("hello from 3rd route");
-    next();// goes in thecall stack and return immediately as there is no more code to execute
+app.use('/admin', adminAuth)
+app.get("/admin/Admingetdata",(req,res)=>{
+    res.send("Admin data is getting fetched");
 });
+
+app.get("/admin/admindelete",(req,res)=>{
+    res.send("Admin data is getting deleted");
+})
+app.get('/user', userAuth,(req,res)=>{
+    res.send("User data is getting fetched")
+})
+
+app.use('/', (err,req,res,next)=>{
+    if(err){
+        res.status(500).send("Internal server error");
+    }
+})
 
 
 app.listen(3000,()=>{
