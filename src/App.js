@@ -1,28 +1,34 @@
 const express = require('express');
-
+const {connectDB}=require('./confic/Database');
 const app=express();
+const User =require('./models/user');
 
-const {adminAuth,userAuth} = require('./middleware/Auth');
 
-app.use('/admin', adminAuth)
-app.get("/admin/Admingetdata",(req,res)=>{
-    res.send("Admin data is getting fetched");
+
+app.post("/signup", async(req,res)=>{
+     const user=new User ({
+        firstName: "Shreya",
+        lastName:"Singh",
+        EmailId: "shreya@gmail.com",
+        password:"Shreya@123"
+        
+    });
+    try{await user.save();
+    res.send("user added successfully");}
+    catch(err){
+        res.status(400).send("error in adding user" + err.message);
+    }
 });
 
-app.get("/admin/admindelete",(req,res)=>{
-    res.send("Admin data is getting deleted");
-})
-app.get('/user', userAuth,(req,res)=>{
-    res.send("User data is getting fetched")
-})
 
-app.use('/', (err,req,res,next)=>{
-    if(err){
-        res.status(500).send("Internal server error");
-    }
+connectDB().then(()=>{
+    console.log("Database is connected");
+    app.listen(7777,()=>{
+    console.log("Server is running on port 7777");
 })
+}).catch(()=>{
+    console.error("Database connection is failed");
+});
 
 
-app.listen(3000,()=>{
-    console.log("Server is running on port 3000");
-})
+
