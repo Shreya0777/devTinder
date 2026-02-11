@@ -3,21 +3,18 @@ const {connectDB}=require('./confic/Database');
 const app=express();
 const User =require('./models/user');
 
-
+app.use(express.json());
 
 app.post("/signup", async(req,res)=>{
-     const user=new User ({
-        firstName: "Shreya",
-        lastName:"Singh",
-        EmailId: "shreya@gmail.com",
-        password:"Shreya@123"
+     const user=new User (req.body);
+     try{
+        await user.save();
+        res.send("User is created successfully");
+     }
+     catch(err){
+        res.status(400).send("Error in creating user"+ err.message);
+     }
         
-    });
-    try{await user.save();
-    res.send("user added successfully");}
-    catch(err){
-        res.status(400).send("error in adding user" + err.message);
-    }
 });
 
 
