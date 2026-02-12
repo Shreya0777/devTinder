@@ -17,6 +17,60 @@ app.post("/signup", async(req,res)=>{
         
 });
 
+//get user by email
+
+app.get('/user', async (req,res)=>{
+    const UserEmail = req.body.EmailId
+
+    try {
+        const users = await User.findOne({EmailId: UserEmail});
+        if(users.length === 0){
+            res.status(404).send("User not found");
+        }
+        else{
+             res.send(users);
+        }
+        
+    }
+    catch{
+        res.status(400).send("something went wrong");
+    }
+})
+
+//feed
+
+app.get('/feed', async(req,res)=>{
+    try{
+        const user= await User.find({});
+        res.send(user);
+    }
+    catch{
+        res.status(400).send("something went wrong");
+    }
+})
+
+//Find by id
+
+// Find by ID
+app.get("/users", async (req, res) => {
+    const userId = req.body.userId;   // also make sure correct field name
+
+    try {
+        console.log(userId);
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        res.send(user);
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(400).send("Invalid ID format");
+    }
+});
 
 connectDB().then(()=>{
     console.log("Database is connected");
