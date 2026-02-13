@@ -49,7 +49,6 @@ app.get('/feed', async(req,res)=>{
     }
 })
 
-//Find by id
 
 // Find by ID
 app.get("/users", async (req, res) => {
@@ -71,6 +70,36 @@ app.get("/users", async (req, res) => {
         res.status(400).send("Invalid ID format");
     }
 });
+
+//delete the user
+
+app.delete('/user', async (req,res)=>{
+    const userid = req.body.userId
+    try{
+        const user= await User.findByIdAndDelete(userid);
+        res.send("user deleted successfully");
+    }
+    catch{
+        res.status(400).send("Something went wrong")
+    }
+})
+
+//update an user
+app.patch("/user", async (req,res)=>{
+ const userId = req.body.userId;
+ const data = req.body;
+ console.log(data);
+
+ try{
+    await User.findByIdAndUpdate({_id: userId} , data );
+    res.send("user updated successfully");
+ }
+ catch{
+    res.status(400).send("Something went wrong");
+ }
+})
+
+
 
 connectDB().then(()=>{
     console.log("Database is connected");
