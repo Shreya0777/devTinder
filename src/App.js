@@ -2,12 +2,31 @@ const express = require('express');
 const {connectDB}=require('./confic/Database');
 const app=express();
 const User =require('./models/user');
+const {ValidateSignup}= require('./utils/Validator')
+const bcrypt= require("bcryptjs")
 
 app.use(express.json());
 
 app.post("/signup", async(req,res)=>{
-     const user=new User (req.body);
-     try{
+      //validation of data
+      try{
+      ValidateSignup(req);
+
+      const {firstName,lastName,EmailId,password}=req.body;
+
+      //encryption of data
+      const passwordhash =  await bcrypt.hash(password,10)
+      console.log(passwordhash);
+       
+
+     const user=new User ({
+        firstName,
+        lastName,
+        EmailId,
+        password:passwordhash,
+
+      });
+     
         await user.save();
         res.send("User is created successfully");
      }
@@ -16,6 +35,34 @@ app.post("/signup", async(req,res)=>{
      }
         
 });
+// login api
+
+app.post('/login' , async (req,res)=>{
+    
+      try{
+        const {EmailId,password} =req.body;
+      const user = await User.findOne({EmailId:EmailId});
+
+      if(!user){
+        throw new Error("Invalid credentials");
+      }
+      const isPasswordvalid = await bcrypt.compare(password,user.password);
+      if(isPasswordvalid)
+      {
+        res.send("Login Successfully");
+      }
+      else{
+        res.send("Invalid Credentials");
+      }
+      }
+      catch(err){
+        res.status(400).send("ERROR:" + err.message)
+      }
+      
+      
+    
+
+})
 
 //get user by email
 

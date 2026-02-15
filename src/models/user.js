@@ -31,7 +31,7 @@ password: {
   type: String,
   required: true,
   minLength: 8,
-  maxLength: 15,
+  // maxLength: 25,
   validate(value) {
     if (!validator.isStrongPassword(value)) {
       throw new Error("Enter a strong password");
