@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator= require("validator");
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -19,22 +20,25 @@ const userSchema = new mongoose.Schema({
     required: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
+    validate(value){
+      if(!validator.isEmail(value)){
+        throw new Error("Invalid email address:" + value);
+      }
+    },
     unique: true,
   },
-  password: {
-    type: String,
-    required: true,
-    minLength: 8,
-    maxLength: 15,
-    validate: {
-      validator: function (value) {
-        return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/.test(value);
-      },
-      message:
-        "Password must contain at least one letter, one number, one special character and be at least 8 characters long",
-    },
+password: {
+  type: String,
+  required: true,
+  minLength: 8,
+  maxLength: 15,
+  validate(value) {
+    if (!validator.isStrongPassword(value)) {
+      throw new Error("Enter a strong password");
+    }
   },
+},
+
   age: {
     type: Number,
     min: 18,
@@ -51,11 +55,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:
       "https://tse2.mm.bing.net/th/id/OIP.9k6NZTQk5G6g5PVDDDeLiAHaHa?pid=Api&P=0&h=180",
+      validate(value){
+      if(!validator.isURL(value)){
+        throw new Error("Invalid URL address:" + value);
+      }
+    }
   },
   About: {
     type: String,
     default: "This is about section...",
   },
-});
+  skills:{
+    type: [String]
+  },
+ 
+},
+
+{
+  timestamps: true
+}
+);
 
 module.exports = mongoose.model("user", userSchema);
