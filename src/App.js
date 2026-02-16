@@ -4,8 +4,11 @@ const app=express();
 const User =require('./models/user');
 const {ValidateSignup}= require('./utils/Validator')
 const bcrypt= require("bcryptjs")
+const cookiesparser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
+app.use(cookiesparser());
 
 app.post("/signup", async(req,res)=>{
       //validation of data
@@ -40,6 +43,7 @@ app.post("/signup", async(req,res)=>{
 app.post('/login' , async (req,res)=>{
     
       try{
+
         const {EmailId,password} =req.body;
       const user = await User.findOne({EmailId:EmailId});
 
@@ -49,6 +53,12 @@ app.post('/login' , async (req,res)=>{
       const isPasswordvalid = await bcrypt.compare(password,user.password);
       if(isPasswordvalid)
       {
+        //create a JWT Token
+        const token= await jwt.sign({_id : user._id}, "Shreya@singh12345")
+        console.log(token);
+          
+        //Add token to the cookies and send the response back
+        res.cookie("token", token);
         res.send("Login Successfully");
       }
       else{
@@ -64,6 +74,33 @@ app.post('/login' , async (req,res)=>{
 
 })
 
+app.get('/profile',async (req,res)=>{
+    try{
+    const cookies= req.cookies;
+    const {token} = cookies;
+
+    //validate
+    if(!token){
+        throw new Error("Invalid Token");
+    }
+
+    const decodedMessage= await jwt.verify(token,"Shreya@singh12345");
+    console.log(decodedMessage);
+
+    const {_id} = decodedMessage;
+    const user= await User.findById(_id);
+    if(!user){
+        throw new Error("Please login again");
+    }
+
+    
+    console.log(user);
+    res.send(user);
+    }
+     catch(err){
+        res.status(400).send("ERROR:" + err.message)
+      }
+})
 //get user by email
 
 app.get('/user', async (req,res)=>{
