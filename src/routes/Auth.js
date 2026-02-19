@@ -68,4 +68,11 @@ routerAuth.post('/login' , async (req,res)=>{
 
 })
 
+routerAuth.post('/logout',(req,res)=>{
+  res.cookie("token", null,{
+  expires: new Date(Date.now())
+  })
+  res.send("Logout successfully");
+})
+
 module.exports = {routerAuth};

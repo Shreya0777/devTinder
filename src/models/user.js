@@ -48,7 +48,7 @@ password: {
   gender: {
     type: String,
     validate(value) {
-      if (!["male", "female", "other"].includes(value)) {
+      if (!["Male", "Female", "other"].includes(value)) {
         throw new Error("Gender data is invalid");
       }
     },
