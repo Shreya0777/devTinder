@@ -5,6 +5,7 @@ const cookiesparser = require("cookie-parser");
 const {routerAuth}= require('./routes/Auth');
 const {routerProfile}= require('./routes/profile');
 const {routerRequest} = require('./routes/request');
+const {routerUser} = require('./routes/user');
 
 // parse JSON and cookies before mounting routes so handlers can access `req.body` and `req.cookies`
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(cookiesparser());
 app.use('/',routerAuth);
 app.use('/',routerProfile);
 app.use('/',routerRequest);
+app.use('/',routerUser);
 
 
 connectDB().then(()=>{

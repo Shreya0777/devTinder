@@ -13,13 +13,14 @@ post/profile/password
 
 ## connection request router
 
-post /request/send/interested/:userId
-post /request/send/ignored/:userID
-post /request/send/rejected/:userID
-post /request/send/Accepted/:userID
+post /request/send/:status/:userId ->ignored,interested
+
+post /request/send/:status/:userID-> accepted,rejected
+
 
 ## user router
 
-Get /user/connection
+
 Get /user/request
+Get /user/connection
 Get /user/feed -> gets the profile of other users
